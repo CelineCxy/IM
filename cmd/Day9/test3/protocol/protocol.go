@@ -38,6 +38,7 @@ func ReadMessage(r io.Reader) ([]byte, error) {
 	}
 
 	length := binary.BigEndian.Uint32(header[:])
+	fmt.Printf("length:%#v", length)
 	// 先检查长度，再分配内存。
 	if length > MaxBodySize {
 		return nil, fmt.Errorf("消息过长：%d 字节，上限 %d", length, MaxBodySize)

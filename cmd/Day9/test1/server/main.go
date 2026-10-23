@@ -2,17 +2,27 @@ package main
 
 import (
 	"bufio"
+	"context"
 	"fmt"
 	"log"
 	"net"
 	"strings"
+	"time"
 )
 
 func main() {
 	//第一步，监听本机的9090端口
-	listener, err := net.Listen("tcp", "127.0.0.1:9090")
+	config := net.ListenConfig{
+		KeepAliveConfig: net.KeepAliveConfig{
+			Enable:   true,
+			Idle:     30 * time.Second,
+			Interval: 10 * time.Second,
+			Count:    3,
+		},
+	}
+	listener, err := config.Listen(context.Background(), "tcp", "127.0.0.1:8080")
 	if err != nil {
-		log.Println("监听失败：", err)
+		log.Println("监听失败:", err)
 		return
 	}
 	defer listener.Close()
